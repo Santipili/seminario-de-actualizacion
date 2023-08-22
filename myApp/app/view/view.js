@@ -26,7 +26,7 @@ class view extends HTMLElement
             let response = await fetch('http://localhost:3000/', DataTransfer );    
             let responseJSON = await response.json();
 
-            console.log(responseJSON.message);
+            console.log(responseJSON);
             return responseJSON;      
             
         }

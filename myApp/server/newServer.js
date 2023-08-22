@@ -1,7 +1,6 @@
 const http = require('http');
 const mysql = require("mysql");
-// const url = require('url');
-// const { modelServer } = require('./model/model.js');
+
 let hostname = 'localhost'
 let PORT = 3000 
 
@@ -20,7 +19,7 @@ function processRequire(req, res){
         let DBHandler = mysql.createConnection({
             host: hostname,
             port: 3306,
-            user: 'root',  // Cambiar esto!!!!
+            user: 'root',  
             password: 'vBnmb56_',
             database: 'mydb',
         });
@@ -28,44 +27,38 @@ function processRequire(req, res){
         DBHandler.connect((error) => {
             if (error) {
               console.error("Error to connect DB: ", error);
-            //   reject(error);
             } else {
               console.log("Success connection to DB!");
-            //   resolve();
             }
         });
 
-        const query = `CALL mp_GetAllUsers()`;
+        const query = `CALL mp_GetAllUsers()`; //-------------SELECT `nick_names` from `user`;
 
         DBHandler.query(query, (error, results) => {
             if (error) {
               console.error("QUERY ERROR:", error);
               return;
             }        
+
+            const nombresClientes = results[0].map(row => {
+                return { nick_name: row.nick_name };
+            });
             
-            // El resultado contiene un array de arrays con los datos
-            const nombresClientes = results[0].map(row => row.nombre_cliente);
-            // Muestra los nombres de los clientes en el console.log
-            console.log('Nombres de clientes:', nombresClientes);
-            
-            DBHandler.end();
-        });
-
-        let requestData = '';
-        req.on('data', (chunk) => {
-            requestData += chunk;
-        });
-
-        req.on('end', () => {
-            const data = { message: "pene" };
-
-            res.writeHead(200, {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
+            let requestData = '';
+            req.on('data', (chunk) => {
+                requestData += chunk;
+            });
+    
+            req.on('end', () => {              
+                res.writeHead(200, {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                });
+    
+                res.end(JSON.stringify(nombresClientes));                
             });
 
-            res.end(JSON.stringify(data));
-            console.log('POST method');
+            DBHandler.end();
         });
     
     } else {
@@ -75,7 +68,7 @@ function processRequire(req, res){
   
 }
 
-// const server = http.createServer(processRequire);
+
 const server = http.createServer((req, res) => {
     processRequire(req, res);
   });
