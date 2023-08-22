@@ -47,26 +47,28 @@ function processRequire(req, res){
             const nombresClientes = results[0].map(row => row.nombre_cliente);
             // Muestra los nombres de los clientes en el console.log
             console.log('Nombres de clientes:', nombresClientes);
+
+            let requestData = '';
+            req.on('data', (chunk) => {
+                requestData += chunk;
+            });
+
+            req.on('end', () => {
+                const data = nombresClientes;
+    
+                res.writeHead(200, {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                });
+    
+                res.end(JSON.stringify(data));
+                console.log('POST method');
+            });
             
             DBHandler.end();
         });
 
-        let requestData = '';
-        req.on('data', (chunk) => {
-            requestData += chunk;
-        });
 
-        req.on('end', () => {
-            const data = { message: "pene" };
-
-            res.writeHead(200, {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-            });
-
-            res.end(JSON.stringify(data));
-            console.log('POST method');
-        });
     
     } else {
         res.writeHead(404, { "Content-Type": "text/plain" });
