@@ -1,11 +1,11 @@
-import { view } from "./app/view/view.js";
+import { myApp } from "./app/myApp.js";
 
 
 function startApp() {
 
-    let myApp = new view();
+    let startApp = new myApp();
 
-   document.body.appendChild(myApp);
+   document.body.appendChild(startApp.innerView);
 
 }
 

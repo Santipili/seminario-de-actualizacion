@@ -3,37 +3,60 @@ class view extends HTMLElement
     constructor()
     {
         super();
-        this.button = document.createElement('button');
-        this.button.innerHTML = "boton";
+        this.buttonUsers = document.createElement('button');
+        this.buttonUsers.innerHTML = 'Users';
+        this.buttonUsers.id = "GetUsers"
+
+        this.buttonGroups = document.createElement('button');
+        this.buttonGroups.innerHTML = "Groups";
+        this.buttonGroups.id = "GetGroups";
+
+        this.buttonCreateUser = document.createElement('button');
+        this.buttonCreateUser.innerHTML = "Create User";
+        this.buttonCreateUser.id = "CreateUser";
+
+        this.buttonCreateGroup = document.createElement('button');
+        this.buttonCreateGroup.innerHTML = "Create Group";
+        this.buttonCreateGroup.id = "CreateGroup";
+
+        this.buttonDeleteUser = document.createElement('button');
+        this.buttonDeleteUser.innerHTML = "Delete User";
+        this.buttonDeleteUser.id = "DeleteUser";
+
+        this.buttonDeleteGroup = document.createElement('button');
+        this.buttonDeleteGroup.innerHTML = "Delete Group";
+        this.buttonDeleteGroup.id = "DeleteGroup";
+
+        this.formUser = document.createElement('form');
+        
+        this.inputUserName = document.createElement('input');
+        this.inputUserPassword = document.createElement('input');
+
+        this.formUser.appendChild(this.inputUserName);
+        this.formUser.appendChild(this.inputUserPassword);      
 
 
-        this.button.addEventListener( 'click' , () => { 
-            this.buttonClick(); 
-        });
+
+        this.container = document.createElement('div');
+        this.container.appendChild(this.buttonUsers);
+        this.container.appendChild(this.buttonGroups);
+        this.container.appendChild(this.formUser);
+        this.container.appendChild(this.buttonCreateUser);
 
 
 
-        this.appendChild(this.button);
+        this.appendChild(this.container);
     }
 
-    async buttonClick() 
+    getUserData()
     {
-        try{
-            
-            let DataTransfer ={
-                method:"POST"
-            }    
-            let response = await fetch('http://localhost:3000/', DataTransfer );    
-            let responseJSON = await response.json();
-
-            console.log(responseJSON);
-            return responseJSON;      
-            
-        }
-        catch(error){
-            console.log(error);
+        let data = 
+        {
+            nick: this.inputUserName.value,
+            password: this.inputUserPassword.value
         }
 
+        return data;       
     }
 
     connectedCallback()

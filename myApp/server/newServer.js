@@ -32,33 +32,83 @@ function processRequire(req, res){
             }
         });
 
-        const query = `CALL mp_GetAllUsers()`; //-------------SELECT `nick_names` from `user`;
+        let body = '';
+        req.on('data', (chunk) => {
+            body += chunk.toString();
+        });
+        
+        req.on('end', () => {              
+            const requestData = JSON.parse(body);
+            let query;
+        
+            switch(requestData.type)
+            {
+                case "USERS":
+                    query = `CALL mp_GetAllUsers()`; //-------------SELECT `nick_names` from `user`;
+                    
+                    DBHandler.query(query, (error, results) => {
+                        if (error) {
+                            console.error("QUERY ERROR:", error);
+                            return;
+                        }        
+                        
+                        const nombresClientes = results[0].map(row => {
+                            return { nick_name: row.nick_name };
+                        });
 
-        DBHandler.query(query, (error, results) => {
-            if (error) {
-              console.error("QUERY ERROR:", error);
-              return;
-            }        
-
-            const nombresClientes = results[0].map(row => {
-                return { nick_name: row.nick_name };
-            });
+                        res.writeHead(200, {
+                            "Content-Type": "application/json",
+                            "Access-Control-Allow-Origin": "*",
+                        });
             
-            let requestData = '';
-            req.on('data', (chunk) => {
-                requestData += chunk;
-            });
-    
-            req.on('end', () => {              
-                res.writeHead(200, {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                });
-    
-                res.end(JSON.stringify(nombresClientes));                
-            });
+                        res.end(JSON.stringify(nombresClientes));             
+            
+                        DBHandler.end();
+                    });
 
-            DBHandler.end();
+                break;
+            
+                case "GROUPS":
+                    query = `CALL mp_GetAllGroups()`; //-------------SELECT `nick_names` from `user`;
+                    
+                    DBHandler.query(query, (error, results) => {
+                        if (error) {
+                            console.error("QUERY ERROR:", error);
+                            return;
+                        }        
+                        
+                        const groupsNames = results[0].map(row => {
+                            return { name: row.name };
+                        });
+
+                        res.writeHead(200, {
+                            "Content-Type": "application/json",
+                            "Access-Control-Allow-Origin": "*",
+                        });
+            
+                        res.end(JSON.stringify(groupsNames));             
+            
+                        DBHandler.end();
+                    });
+
+                    break;
+                
+                case "CreateUser":
+
+                requestData.data.nick;
+                requestData.data.password;
+
+                    break;
+                
+                case "CreateGroup":
+                    break;
+
+                case "DeleteUser":
+                    break;
+
+                case "DeleteGroup":
+
+            }
         });
     
     } else {
