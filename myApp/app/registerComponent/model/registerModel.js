@@ -1,0 +1,6 @@
+
+class registerModel{
+
+}
+
+export {registerModel};

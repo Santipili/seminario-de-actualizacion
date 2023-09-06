@@ -12,11 +12,15 @@ function processRequire(req, res){
     res.setHeader("Access-Control-Allow-Headers", "Content-Type")
 
     if (req.method === "OPTIONS") {
-
+        
         res.writeHead(204).end();
-
+        
     } else if (req.method === "POST") {
-
+        let requestData = '';
+        req.on('data', (chunk) => {
+            requestData += chunk;
+        });
+        
         let DBHandler = mysql.createConnection({
             host: hostname,
             port: 3306,
@@ -34,7 +38,7 @@ function processRequire(req, res){
             //   resolve();
             }
         });
-
+        
         const query = `CALL mp_GetAllUsers()`;
 
         DBHandler.query(query, (error, results) => {
@@ -47,26 +51,23 @@ function processRequire(req, res){
             const nombresClientes = results[0].map(row => row.nombre_cliente);
             // Muestra los nombres de los clientes en el console.log
             console.log('Nombres de clientes:', nombresClientes);
+
+    
+            req.on('end', () => {
+                const data = nombresClientes;
+    
+                res.writeHead(200, {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                });
+    
+                res.end(JSON.stringify(data));
+                console.log('POST method');
+            });
             
             DBHandler.end();
         });
 
-        let requestData = '';
-        req.on('data', (chunk) => {
-            requestData += chunk;
-        });
-
-        req.on('end', () => {
-            const data = { message: "pene" };
-
-            res.writeHead(200, {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-            });
-
-            res.end(JSON.stringify(data));
-            console.log('POST method');
-        });
     
     } else {
         res.writeHead(404, { "Content-Type": "text/plain" });
