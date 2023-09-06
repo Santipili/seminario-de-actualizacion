@@ -1,17 +1,4 @@
-// import { view } from "./app/view/view.js";
-
-
-// function startApp() {
-
-//     let myApp = new view();
-
-//    document.body.appendChild(myApp);
-
-// }
-
-//  window.addEventListener('load', startApp);
-
- import { Application } from "./app/Application.js";
+import { Application } from "./app/Application.js";
 
 function startApplication() {
   let application = new Application();
