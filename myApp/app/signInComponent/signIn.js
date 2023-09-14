@@ -1,6 +1,6 @@
-import {signInView } from './signInView.js';
-// import {signInModel } from './signInModel.js';
-import {signInController } from './signInController.js';
+import {signInView } from './view/signInView.js';
+// import {signInModel } from './model/signInModel.js';
+import {signInController } from './controller/signInController.js';
 
 
 class signIn extends HTMLElement {
@@ -19,7 +19,7 @@ class signIn extends HTMLElement {
     }
 
     disconnectedCallback() {
-        this.controller.disabled();
+        // this.controller.disabled();
     }
   
   }

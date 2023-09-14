@@ -8,7 +8,9 @@ class registerView extends HTMLElement
        
         this.registerTitle = document.createElement('p');        
         
-        this.message = document.createElement('p');       
+        this.message = document.createElement('p');    
+
+        this.nickName = this.createLabel('NickName', 'text', 'nickName');   
 
         this.flexDiv = document.createElement('div');        
 
@@ -17,6 +19,11 @@ class registerView extends HTMLElement
         this.lastnameLabel = this.createLabel('Lastname', 'text', 'lastname');
 
         this.emailLabel = this.createLabel('Email', 'email', 'email');
+
+        this.phoneLabel = this.createLabel('Phone Number', 'number', 'phone');
+
+        this.nidLabel = this.createLabel('DNI', 'number', 'dni');
+
 
         this.passwordLabel = this.createLabel('Password', 'password', 'password');
 
@@ -61,18 +68,17 @@ class registerView extends HTMLElement
         this.signIn.innerHTML = 'Already have an account?';
         
         this.form.appendChild(this.registerTitle);
-
         this.form.appendChild(this.message);
-
+        this.form.appendChild(this.nickName);
 
         this.flexDiv.appendChild(this.firstnameLabel);
         this.flexDiv.appendChild(this.lastnameLabel);
         this.form.appendChild(this.flexDiv);
-
         this.form.appendChild(this.emailLabel);
+        this.form.appendChild(this.phoneLabel);
+        this.form.appendChild(this.nidLabel);
         this.form.appendChild(this.passwordLabel);
         this.form.appendChild(this.confirmPasswordLabel);
-
         this.form.appendChild(this.submitButton);
 
         this.signIn.appendChild(this.signInLink);
@@ -238,6 +244,20 @@ class registerView extends HTMLElement
         label.appendChild(span);
 
         return label;
+    }
+
+    getRegisterData() {
+      let userDataRegister = {
+            'nickname'  : this.nickName.childNodes[0].value,
+            'password'  : this.passwordLabel.childNodes[0].value,
+            'name'      : this.firstnameLabel.childNodes[0].value,
+            'surname'   : this.lastnameLabel.childNodes[0].value,
+            'dni'       : this.nidLabel.childNodes[0].value,
+            'phone'     : this.phoneLabel.childNodes[0].value,
+            'email'     : this.emailLabel.childNodes[0].value
+      }
+      return userDataRegister;
+
     }
 }
 
