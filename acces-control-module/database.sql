@@ -42,7 +42,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`user_group`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `mydb`.`user_group` (
+CREATE  TABLE IF NOT EXISTS `mydb`.`user_has_group` (
   `id_user` INT NOT NULL ,
   `id_group` INT NOT NULL ,
   PRIMARY KEY (`id_user`, `id_group`) ,
@@ -92,7 +92,7 @@ CREATE  TABLE IF NOT EXISTS `mydb`.`user_data` (
   CONSTRAINT `id-user_idx`
     FOREIGN KEY (`id_user` )
     REFERENCES `mydb`.`user` (`id` )
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `id-data`
     FOREIGN KEY (`id_data` )
@@ -132,7 +132,7 @@ CREATE  TABLE IF NOT EXISTS `mydb`.`group_access` (
   CONSTRAINT `id-access`
     FOREIGN KEY (`id_access` )
     REFERENCES `mydb`.`access` (`id` )
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -164,11 +164,49 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mydb`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `mp_CreateUser`(IN userName VARCHAR(45), userPassword VARCHAR(55))
+DROP procedure IF EXISTS `mp_CreateUser` $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `mp_CreateUser`(IN userNickName VARCHAR(45), userPassword VARCHAR(55), userName VARCHAR(55), userSurname VARCHAR(55), userNID INT, userEmail VARCHAR(255), userPhone VARCHAR(45))
 BEGIN
+	DECLARE v_user_id INT;
+	DECLARE v_data_id INT;
+	DECLARE v_result_code INT;
+	DECLARE v_result_message TEXT;
+
 	INSERT INTO `user` (`nick_name`,`password`)
-    VALUES (userName,userPassword);
-END$$
+    VALUES (userNickName, userPassword);
+	SET v_user_id = LAST_INSERT_ID();
+
+	-- comprobamos si se creo bien el usuario
+	IF v_user_id > 0 THEN
+		INSERT INTO `data`(`name`,`surname`,`NID`,`email`,`phone`)
+		VALUES (userName, userSurname, userNID, userEmail, userPhone);
+		SET v_data_id = LAST_INSERT_ID();
+	
+		-- comprobamos si se inserta bien la data 
+		IF v_data_id > 0 THEN
+			INSERT INTO `user_data` (`id_user`, `id_data`)
+			VALUES (v_user_id, v_data_id);
+		
+      -- asociamos el usuario con el grupo "guest"
+			INSERT INTO `group_has_user` (`id_user`, `id_group`)
+			VALUES (v_user_id, 2);
+
+			SET v_result_code = 1;
+			SET v_result_message = "usuario creado correctamente";
+		
+		ELSE
+			SET v_result_code = 2;
+			SET v_result_message = "error al insertar la data del usuario";
+		END IF;
+
+	ELSE
+		SET v_result_code = 3;
+		SET v_result_message = "error al crear usuario (nickName repetido)";
+	END IF;
+
+  --responde un json como result que tiene un codigo de estado (1,2,3) y un mensaje
+	SELECT JSON_OBJECT('status', v_result_code, 'message', v_result_message) AS result;
+END $$
 
 DELIMITER ;
 
@@ -223,30 +261,21 @@ DELIMITER ;
 -- -----------------------------------------------------
 
 
-INSERT INTO `mydb`.`group`
-(`name`)
-VALUES
-("admin"),("guest");
+INSERT INTO `mydb`.`group`(`name`)
+VALUES ("admin"),("guest"); 
+-- id:1 , id:2
 
-INSERT INTO `mydb`.`user`
-(`nick_name`,`password`)
-VALUES
-("saantipili","casa4565");
+INSERT INTO `mydb`.`user` (`nick_name`,`password`)
+VALUES ("saantipili", "casa4565");
 
-INSERT INTO `mydb`.`user_group`
-(`id_user`,`id_group`)
-VALUES
-(1,1);
+INSERT INTO `mydb`.`user_has_group` (`id_user`,`id_group`)
+VALUES (1,1);
 
-INSERT INTO `mydb`.`data`
-(`name`,`surname`,`NID`,`email`,`phone`)
-VALUES
-("Santiago Tomas","Pili",37011358,"santi.tomas.pili@gmail.com",2235254045);
+INSERT INTO `mydb`.`data` (`name`,`surname`,`NID`,`email`,`phone`)
+VALUES ("Santiago Tomas","Pili",37011358,"santi.tomas.pili@gmail.com",2235254045);
 
-INSERT INTO `mydb`.`user_data`
-(`id_user`,`id_data`)
-VALUES
-(1,1);
+INSERT INTO `mydb`.`user_data` (`id_user`,`id_data`)
+VALUES (1,1);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
