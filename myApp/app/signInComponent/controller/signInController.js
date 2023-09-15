@@ -35,9 +35,41 @@ class signInController{
         // this.innerView.onclick = null;
     }
 
-    onSignInButtonClick()
+    async onSignInButtonClick()
     {
-        
+        event.preventDefault();
+        console.log('Sign In');
+         
+        // let signInData = {
+        //     'nickname'  : 'saantipili',
+        //     'password'  : 'casa4565'
+        // };
+
+        let signInData = this.innerView.signInData()
+
+        try {      
+            let requestMetadata = {
+                method: "POST",
+                body:JSON.stringify(signInData),
+              };
+    
+            let result = await fetch ("http://localhost:3000/signIn", requestMetadata);    
+            let jsonBody = await result.json();
+
+            alert(jsonBody.message); //el jsonBody tiene el id, el token y el mensaje
+            console.log(jsonBody);
+
+            if (jsonBody.id>0){
+                localStorage.setItem('nickname', signInData.nickname);
+                localStorage.setItem('id', jsonBody.id);
+                localStorage.setItem('token', 'john@example.com');
+                window.dispatchEvent(new CustomEvent('signed'));
+            }
+        } catch (error) {
+            console.log("error");
+            alert(error.message);
+        }
+
     }
 
     onRegisterLinkClick()

@@ -1,52 +1,41 @@
-const mysql = require("mysql");
+const {userController} = require("./userController");
 
-function signInHandler(requestData){
+
+async function signInHandler(requestData, responseCallback){
+    console.log('signin')
     
-    let DBHandler = mysql.createConnection({
-        host: 'localhost',
-        port: 3306,
-        user: 'root',  
-        password: 'vBnmb56_',
-        database: 'mydb',
-    });
    
    try {       
-        DBHandler.connect((error) => {
-            if (error) {
-             console.error("Error to connect DB: ", error);
-            } else {
-             console.log("Success connection to DB!");
+
+        let userControl = new userController(DBHandler);
+
+        const validateUser = await userControl.validateUser(requestData.nickname, requestData.password);
+        const validateResponse = await JSON.parse(validateUser);
+
+        if (!validateResponse.validated){
+            console.error("Error");  
+            responseData = {
+                id:0,
+                token: '',
+                message: "User or Password Incorrect"
+            }          
+            responseCallback(400, responseData);
+        }
+        else {
+            console.log('aprobado');
+            console.log(validateUser);
+            
+            responseData = {
+                id:validateResponse.iduser,
+                token: '',
+                message: "User and Password Correct"
             }
-        });
-        
-        let userData = {
-            'nickname'  : requestData.nickname,
-            'password'  : requestData.password
-        };
-        
-        let queryResult;
+            responseCallback(200, responseData);
+        }        
 
-        const queryParams = Object.values(userData)
-        .map((value) => `'${value}'`)
-        .join(", ");
-        let name = `mp_GetAllGroups`; //-------------Modificar el procedimiento      
-        const query = `CALL ${name}(${queryParams})`;
-
-        DBHandler.query(query, (error, results) => {
-            if (error) {
-                console.error("QUERY ERROR:", error);
-               return;
-            }
-
-            queryResult = results;  
-   
-            DBHandler.end();  
-        });
-         
-        responseCallback(200, queryResult);
     } catch (error) {
        results = error;
-       responseCallback(200, results);
+       responseCallback(400, results);
     }
 }
 
@@ -112,11 +101,3 @@ function registerHandler(requestData, responseCallback){
 }
 
 module.exports = {registerHandler, signInHandler};
-
-        // let userHandler = new UserHandler(new DataBaseHandler());
-
-        // (async () => {
-            //   results = await userHandler.create(userData);
-            //   await userHandler.dbhandler.close();           
-            
-            // })();

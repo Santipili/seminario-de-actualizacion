@@ -11,9 +11,9 @@ class signInView extends HTMLElement
         this.form = document.createElement('form');
         
 
-        this.userNameContainer = document.createElement('div');      
-        this.userNameLabel = document.createElement('label');
-        this.userNameInput = document.createElement('input');
+        this.userNickNameContainer = document.createElement('div');      
+        this.userNickNameLabel = document.createElement('label');
+        this.userNickNameInput = document.createElement('input');
 
         this.passwordContainer = document.createElement('div');
         this.passwordLabel = document.createElement('label');
@@ -27,8 +27,7 @@ class signInView extends HTMLElement
         this.buttonSignIn = document.createElement('button');
 
         this.p = document.createElement('p');        
-        this.register = document.createElement('a');
-        
+        this.register = document.createElement('a'); 
 
 
 
@@ -53,7 +52,7 @@ class signInView extends HTMLElement
         this.signInTitle.classList.add("title");
         this.signInTitle.textContent = "Sign In Form";
         this.form.classList.add("form");
-        this.userNameContainer.classList.add("input-group");
+        this.userNickNameContainer.classList.add("input-group");
         this.passwordContainer.classList.add("input-group");
         this.forgotPasswordContainer.classList.add("forgot");
         this.forgotPassword.innerHTML = 'Forgot your password?';
@@ -66,9 +65,9 @@ class signInView extends HTMLElement
         this.register.innerHTML = "Register";
         this.register.id= "registerLink";
         
-        this.userNameLabel.for = this.userNameInput;
-        this.userNameContainer.appendChild(this.userNameLabel);
-        this.userNameContainer.appendChild(this.userNameInput);
+        this.userNickNameLabel.for = this.userNickNameInput;
+        this.userNickNameContainer.appendChild(this.userNickNameLabel);
+        this.userNickNameContainer.appendChild(this.userNickNameInput);
 
         this.passwordLabel.for = this.inputPassword;
         this.passwordContainer.appendChild(this.passwordLabel);
@@ -76,7 +75,7 @@ class signInView extends HTMLElement
 
         this.forgotPasswordContainer.appendChild(this.forgotPassword);     
 
-        this.form.appendChild(this.userNameContainer);
+        this.form.appendChild(this.userNickNameContainer);
         this.form.appendChild(this.passwordContainer);
         this.form.appendChild(this.forgotPasswordContainer);
         this.form.appendChild(this.buttonSignIn);      
@@ -180,6 +179,14 @@ class signInView extends HTMLElement
             color: rgba(156, 163, 175, 1);
           }`;
         this.appendChild(style);
+    }
+
+    signInData(){
+      let userDataRegister = {
+        'nickname'  : this.userNickNameInput.value,
+        'password'  : this.inputPassword.value,
+      }
+      return userDataRegister;
     }
 
 }

@@ -1,6 +1,6 @@
 import { signIn } from './signInComponent/signIn.js';
 import { register} from './registerComponent/register.js';
-// import { home } from './homeComponent/home.js';
+import { home } from './homeComponent/home.js';
 import { navBar } from './navBarComponent/navBar.js';
 import {loader} from './loaderComponent/loader.js';
 
@@ -35,6 +35,7 @@ class Application extends HTMLElement {
         window.addEventListener('nav-register-event', () => { this.onRegisterView();});
         window.addEventListener('nav-home-event', () => { this.onHomeView();});
 
+        window.addEventListener('signed', () => { this.onHomeView();});
         window.addEventListener('register-signin-event', () => { this.onSignInView();});
         window.addEventListener('signin-register-event', () => { this.onRegisterView();});
 

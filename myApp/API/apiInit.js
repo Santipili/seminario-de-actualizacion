@@ -1,7 +1,7 @@
 const { server } = require('./server/server.js');
 
-const      { signInHandler } = require('./server/controllers/sessionController.js');
-const    { registerHandler } = require('./server/controllers/sessionController.js');
+const      { signInHandler } = require('./server/controllers/sessionHandler.js');
+const    { registerHandler } = require('./server/controllers/sessionHandler.js');
 
 function greet() {
   console.log("Welcome!!!");
