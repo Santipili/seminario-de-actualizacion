@@ -163,53 +163,53 @@ DELIMITER ;
 -- -----------------------------------------------------
 
 DELIMITER $$
-USE `mydb`$$
-DROP procedure IF EXISTS `mp_CreateUser` $$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `mp_CreateUser`(IN userNickName VARCHAR(45), userPassword VARCHAR(55), userName VARCHAR(55), userSurname VARCHAR(55), userNID INT, userEmail VARCHAR(255), userPhone VARCHAR(45))
 BEGIN
-	DECLARE v_user_id INT;
-	DECLARE v_data_id INT;
-	DECLARE v_result_code INT;
-	DECLARE v_result_message TEXT;
+	DECLARE aux_user_id INT;
+	DECLARE aux_data_id INT;
+	DECLARE aux_result_code INT;
+	DECLARE aux_result_message TEXT;
+	DECLARE aux_result_json VARCHAR(500);
 
 	INSERT INTO `user` (`nick_name`,`password`)
     VALUES (userNickName, userPassword);
-	SET v_user_id = LAST_INSERT_ID();
+	SET aux_user_id = LAST_INSERT_ID();
 
 	-- comprobamos si se creo bien el usuario
-	IF v_user_id > 0 THEN
+	IF aux_user_id > 0 THEN
 		INSERT INTO `data`(`name`,`surname`,`NID`,`email`,`phone`)
 		VALUES (userName, userSurname, userNID, userEmail, userPhone);
-		SET v_data_id = LAST_INSERT_ID();
+		SET aux_data_id = LAST_INSERT_ID();
 	
 		-- comprobamos si se inserta bien la data 
-		IF v_data_id > 0 THEN
+		IF aux_data_id > 0 THEN
 			INSERT INTO `user_data` (`id_user`, `id_data`)
-			VALUES (v_user_id, v_data_id);
+			VALUES (aux_user_id, aux_data_id);
 		
-      -- asociamos el usuario con el grupo "guest"
-			INSERT INTO `group_has_user` (`id_user`, `id_group`)
-			VALUES (v_user_id, 2);
+			INSERT INTO `user_has_group` (`id_user`, `id_group`)
+			VALUES (aux_user_id, 2);
 
-			SET v_result_code = 1;
-			SET v_result_message = "usuario creado correctamente";
+			SET aux_result_code = 1;
+			SET aux_result_message = "usuario creado correctamente";
 		
 		ELSE
-			SET v_result_code = 2;
-			SET v_result_message = "error al insertar la data del usuario";
+			SET aux_result_code = 2;
+			SET aux_result_message = "error al insertar la data del usuario";
 		END IF;
 
 	ELSE
-		SET v_result_code = 3;
-		SET v_result_message = "error al crear usuario (nickName repetido)";
+		SET aux_result_code = 3;
+		SET aux_result_message = "error al crear usuario (nickName repetido)";
 	END IF;
+	
+  -- devuelve un JSON con status y message, status=1 creado correctamente
+	SET aux_result_json = CONCAT('{ "status": ', aux_result_code, ', "message": ', aux_result_message, ', "id": ', aux_user_id, ' }');
+  SELECT aux_result_json AS result;
 
-  --responde un json como result que tiene un codigo de estado (1,2,3) y un mensaje
-	SELECT JSON_OBJECT('status', v_result_code, 'message', v_result_message) AS result;
-END $$
+END$$
 
 DELIMITER ;
-
 -- -----------------------------------------------------
 -- procedure mp_GetAllGroups
 -- -----------------------------------------------------
@@ -251,6 +251,28 @@ BEGIN
 	WHERE user.nick_name = NickName;
 
 END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure mp_ValidateUser
+-- -----------------------------------------------------
+
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `mp_ValidateUser`(IN nickName VARCHAR(45), userPassword VARCHAR(55))
+BEGIN
+	DECLARE aux_idUser INT;
+	DECLARE aux_validated BOOLEAN;
+	DECLARE aux_result_json VARCHAR(1000);
+
+	SELECT `id`, `password`= userPassword INTO aux_idUser, aux_validated  FROM `user` WHERE nick_name=nickName;
+
+-- devuelve un JSON con un buleano y el id del usuario si el boolean es true
+	SET aux_result_json = CONCAT('{ "validated": ', aux_validated, ', "iduser": ', IF(aux_validated, aux_iduser, 'null'), ' }');
+  SELECT aux_result_json AS result;
+
+END
 
 DELIMITER ;
 
