@@ -253,8 +253,8 @@ class registerView extends HTMLElement
             'name'      : this.firstnameLabel.childNodes[0].value,
             'surname'   : this.lastnameLabel.childNodes[0].value,
             'dni'       : this.nidLabel.childNodes[0].value,
-            'phone'     : this.phoneLabel.childNodes[0].value,
-            'email'     : this.emailLabel.childNodes[0].value
+            'email'     : this.emailLabel.childNodes[0].value,
+            'phone'     : this.phoneLabel.childNodes[0].value            
       }
       return userDataRegister;
 

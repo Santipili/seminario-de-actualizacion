@@ -2,13 +2,9 @@ const {userController} = require("./userController");
 
 
 async function signInHandler(requestData, responseCallback){
-    console.log('signin')
-    
-   
+    console.log('signin');  
    try {       
-
         let userControl = new userController(DBHandler);
-
         const validateUser = await userControl.validateUser(requestData.nickname, requestData.password);
         const validateResponse = await JSON.parse(validateUser);
 
@@ -16,87 +12,66 @@ async function signInHandler(requestData, responseCallback){
             console.error("Error");  
             responseData = {
                 id:0,
-                token: '',
                 message: "User or Password Incorrect"
             }          
             responseCallback(400, responseData);
         }
         else {
-            console.log('aprobado');
-            console.log(validateUser);
-            
+            console.log('aprobado');            
             responseData = {
                 id:validateResponse.iduser,
                 token: '',
                 message: "User and Password Correct"
             }
             responseCallback(200, responseData);
-        }        
-
+        }       
     } catch (error) {
-       results = error;
-       responseCallback(400, results);
+       responseCallback(400,error);
     }
 }
 
 
-
-function registerHandler(requestData, responseCallback){
-    let DBHandler = mysql.createConnection({
-        host: 'localhost',
-        port: 3306,
-        user: 'root',  
-        password: 'vBnmb56_',
-        database: 'mydb',
-    });
-   
-   try {       
-        DBHandler.connect((error) => {
-            if (error) {
-             console.error("Error to connect DB: ", error);
-            } else {
-             console.log("Success connection to DB!");
-            }
-        });
-        
+async function registerHandler(requestData, responseCallback){
+    console.log('register');  
+   try {      
         let userData = {
             'nickname'  : requestData.nickname,
             'password'  : requestData.password,
             'name'      : requestData.name,
             'surname'   : requestData.surname,
             'dni'       : requestData.dni,
-            'phone'     : requestData.phone,
-            'email'     : requestData.email
-        };
-        
-        let queryResult;
+            'email'     : requestData.email,
+            'phone'     : requestData.phone            
+        };        
 
-        const queryParams = Object.values(userData)
-        .map((value) => `'${value}'`)
-        .join(", ");
-        let name = `mp_CreateUser`; //-------------Modificar el procedimiento      
-        const query = `CALL ${name}(${queryParams})`;
+        let userControl = new userController(DBHandler);
 
-        DBHandler.query(query, (error, results) => {
-            if (error) {
-                console.error("QUERY ERROR:", error);
-               return;
+        const newUser = await userControl.createUser(userData);
+        const newUserResponse = await JSON.parse(newUser);
+
+        if (newUserResponse.status === 1 ){
+            console.log('Creado Correctamente');            
+            responseData = {
+                id:newUserResponse.id,
+                token: '',
+                message: newUserResponse.message
             }
-
-            queryResult = results;  //esto es un json con un codigo y un mensaje
-
-            console.log(queryResult);
-   
-            DBHandler.end();  
-        });
+            responseCallback(200, responseData);            
+        }
+        else {
+            console.error("Error");  
+            responseData = {
+                id:0,
+                message: newUserResponse.message
+            }          
+            responseCallback(400, responseData);            
+        }   
          
-        console.log(queryResult);
+        console.log(newUserResponse);
 
-        responseCallback(200, queryResult.message);
     } catch (error) {
         console.log("Error");
-        results = error;
-        responseCallback(400, results);
+        responseCallback(400, error);
     }            
 }
 
