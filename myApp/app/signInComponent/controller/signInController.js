@@ -54,15 +54,16 @@ class signInController{
               };
     
             let result = await fetch ("http://localhost:3000/signIn", requestMetadata);    
-            let jsonBody = await result.json();
+            let jsonResult = await result.json();
 
-            alert(jsonBody.message); //el jsonBody tiene el id, el token y el mensaje
-            console.log(jsonBody);
+            alert(jsonResult.message); //el jsonResult tiene el id, el token y el mensaje
+            console.log(jsonResult);
 
-            if (jsonBody.id>0){
+            if (jsonResult.id>0){
                 localStorage.setItem('nickname', signInData.nickname);
-                localStorage.setItem('id', jsonBody.id);
-                localStorage.setItem('token', 'john@example.com');
+                localStorage.setItem('id', jsonResult.id);
+                localStorage.setItem('token', jsonResult.token);
+                localStorage.setItem('expirationTime', jsonResult.expirationTime)
                 window.dispatchEvent(new CustomEvent('signed'));
             }
         } catch (error) {
@@ -79,7 +80,7 @@ class signInController{
 
     onforgotPasswordClick()
     {
-        
+        window.dispatchEvent(new CustomEvent('forgotPassword-event'));
     }
 }
 

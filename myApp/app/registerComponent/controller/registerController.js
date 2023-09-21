@@ -35,6 +35,7 @@ class registerController
 
     async onSubmitRegisterClick()
     {
+        event.preventDefault();
         let dataNewUser  =this.innerView.getRegisterData();
 
         try {
@@ -45,10 +46,18 @@ class registerController
               };
     
             let result = await fetch ("http://localhost:3000/register", requestMetadata);    
-            let jsonBody = await result.json();
+            let jsonResult = await result.json();
 
-            console.log(jsonBody);
-            alert(jsonBody.message);
+            console.log(jsonResult);
+            alert(jsonResult.message);
+
+            if (jsonResult.id>0){
+                localStorage.setItem('nickname', dataNewUser.nickname);
+                localStorage.setItem('id', jsonResult.id);
+                localStorage.setItem('token', jsonResult.token);
+                localStorage.setItem('expirationTime', jsonResult.expirationTime)
+                window.dispatchEvent(new CustomEvent('signed'));
+            }
 
           } catch (error) {
             console.log("error");
