@@ -6,7 +6,6 @@ class userController {
     }
 
     async createUser(userData){
-        console.log('creando usuario');
         let dataBase = mysql.createConnection({
             host: 'localhost',
             port: 3306,
@@ -14,7 +13,6 @@ class userController {
             password: 'vBnmb56_',
             database: 'mydb',
         });
-
         const queryParams = Object.values(userData)
         .map((value) => `'${value}'`)
         .join(", ");
@@ -29,6 +27,7 @@ class userController {
                     let name = `mp_CreateUser`;   
                     const query = `CALL ${name}(${queryParams})`;            
                     dataBase.query(query, (error, results) => {
+                        dataBase.end();  
                         if (error) {
                             console.error("QUERY ERROR:", error);
                             reject(error);
@@ -37,7 +36,6 @@ class userController {
                             const queryResult = results[0][0]; 
                             resolve(queryResult);
                         }
-                        dataBase.end();  
                     });
                 }
             });
@@ -50,7 +48,7 @@ class userController {
     updateUser(){
 
     }
-    getUserCompleteData(){
+    getUserFullData(){
 
     }
     getUserContact(){
@@ -60,8 +58,7 @@ class userController {
 
     }
 
-    async validateUser(userNickName, userPassword){
-        console.log('validando usuario');        
+    async validateUser(userNickName, userPassword){   
         let dataBase = mysql.createConnection({
             host: 'localhost',
             port: 3306,

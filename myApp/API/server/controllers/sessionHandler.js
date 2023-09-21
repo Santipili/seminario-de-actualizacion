@@ -1,110 +1,113 @@
 const {userController} = require("./userController");
-
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 
+class userSession{
+    constructor(){
+        this.sessionsMap = new Map();
+    }
 
-async function signInHandler(requestData, responseCallback){
-    console.log('signin');  
-   try {       
-        let userControl = new userController();
-        userControl.validateUser(requestData.nickname, requestData.password).then( r => {
-
-            if (r.id > 0 ){
-                console.log("Signed");  
-                const userToken = generateToken(requestData.nickname);
+    async signIn(requestData){ 
+        try {       
+            let userControl = new userController();
+            const response = await userControl.validateUser(requestData.nickname, requestData.password);
+            if (response.id > 0) {
+                console.log('signed');
+                const userToken = this.generateToken(requestData.nickname);
                 const tokenExpirationTime = new Date();
                 tokenExpirationTime.setMinutes(tokenExpirationTime.getMinutes() + 10);
-         
-                responseData = {
-                    id:r.id,
+                this.setNewSession(response.id, userToken, tokenExpirationTime);
+                const responseData = {
+                    id: response.id,
                     token: userToken,
                     expirationTime: tokenExpirationTime,
                     message: "Signed"
-                }
-                responseCallback(200, responseData);            
-            }
-            else {
-                console.error("Username or Password Incorrect");  
-                responseData = {
-                    id:r.id,
+                };
+                return responseData;
+            } else {
+                const responseData = {
                     message: "Username or Password Incorrect"
-                }          
-                responseCallback(400, responseData);            
+                };
+                return responseData;
             }
-        })
-      
-    } catch (error) {
-        responseData = {
-            error: error,
-            message: "Username or Password Incorrect"
-        }          
-        responseCallback(400, responseData);    
+        } catch (error) {
+            const responseData = {
+                error: error,
+                message: "Username or Password Incorrect"
+            }          
+            return responseData;    
+        }
     }
-}
 
-
-async function registerHandler(requestData, responseCallback){
-   try {      
-        let userControl = new userController();
-        let userData = {
-            'nickname'  : requestData.nickname,
-            'password'  : requestData.password,
-            'name'      : requestData.name,
-            'surname'   : requestData.surname,
-            'dni'       : requestData.dni,
-            'email'     : requestData.email,
-            'phone'     : requestData.phone            
-        };        
-
-        userControl.createUser(userData).then( r => {
-            if (r.id > 0 ){
-                console.log('Creado Correctamente');            
-                const userToken = generateToken(requestData.nickname);
+    async register(requestData){
+        try {      
+            let userControl = new userController();
+            let response = await userControl.createUser(requestData);
+            if (response.id > 0 ){
+                console.log('Create User Success');            
+                const userToken = this.generateToken(requestData.nickname);
                 const tokenExpirationTime = new Date();
                 tokenExpirationTime.setMinutes(tokenExpirationTime.getMinutes() + 10);
-                responseData = {
-                    id:r.id,
+                this.setNewSession(response.id, userToken, tokenExpirationTime);
+                const responseData = {
+                    id:response.id,
                     token: userToken,
                     expirationTime: tokenExpirationTime,
                     message: "Usuario creado correctamente"
                 }
-                responseCallback(200, responseData);            
+                return responseData;             
             }
             else {
-                console.error("Error id NULL");  
-                responseData = {
-                    id:r.id,
+                console.error("Error id NULL o 0");  
+                const responseData = {
                     message: "Imposible crear Usuario"
                 }          
-                responseCallback(400, responseData);            
-            }   
-        });
+                return responseData;             
+            }       
+        } catch (error) {
+            console.log("try error")
+            const responseData = {
+                error: error,
+                message: "Imposible crear usuario"
+            }          
+            return responseData;  
+        }            
+    }
 
-    } catch (error) {
-        console.log(error);
-        responseCallback(400, error);
-    }            
+    logout(userId){
+        this.sessionsMap.delete(userId);
+    }
+
+    setNewSession(userId, userToken, tokenExpirationTime){
+        const tokenData = {
+            token: userToken,
+            tokenExpirationTime: tokenExpirationTime
+          };
+
+        if (this.sessionsMap.has(userId)){
+            this.sessionsMap.delete(userId);
+        }
+
+        this.sessionsMap.set(userId, tokenData);
+    }
+
+    generateToken(param){
+        const uuid = uuidv4();
+        const hash = crypto.createHash('sha256');
+        const dataToHash = param + uuid;
+        hash.update(dataToHash);
+        const token = hash.digest('hex');   
+        return token;
+    }
 }
 
-module.exports = {registerHandler, signInHandler};
+module.exports = {userSession};
 
 
-function generateToken(param){
-    // Generar un UUID v4
-    const uuid = uuidv4();
     
-    // Datos que quieres hashear
-    const dataToHash = param + uuid;
     
-    // Crear un objeto hash con el algoritmo SHA-256
-    const hash = crypto.createHash('sha256');
+ 
     
-    // Actualizar el objeto hash con los datos que deseas hashear
-    hash.update(dataToHash);
+  
     
-    // Calcular el hash
-    const token = hash.digest('hex');   
-
-    return token;
-}
+   
