@@ -7,9 +7,6 @@ class registerView extends HTMLElement
         this.form = document.createElement('form');      
        
         this.registerTitle = document.createElement('p');        
-        
-        this.message = document.createElement('p');    
-
         this.nickName = this.createLabel('NickName', 'text', 'nickName');   
 
         this.flexDiv = document.createElement('div');        
@@ -48,13 +45,11 @@ class registerView extends HTMLElement
 
     render()
     {
+        this.className = 'componente';
         this.form.classList.add('form');
 
         this.registerTitle.classList.add('registerTitle');
         this.registerTitle.textContent = 'Register';
-
-        this.message.classList.add('message');
-        this.message.textContent = 'Signup now and get full access to our app.';
 
         this.flexDiv.classList.add('flex');
 
@@ -68,9 +63,7 @@ class registerView extends HTMLElement
         this.signIn.innerHTML = 'Already have an account?';
         
         this.form.appendChild(this.registerTitle);
-        this.form.appendChild(this.message);
         this.form.appendChild(this.nickName);
-
         this.flexDiv.appendChild(this.firstnameLabel);
         this.flexDiv.appendChild(this.lastnameLabel);
         this.form.appendChild(this.flexDiv);

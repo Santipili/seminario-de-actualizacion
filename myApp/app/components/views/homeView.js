@@ -55,15 +55,16 @@ class homeView extends HTMLElement
 
         this.registerButton.innerText = "Register";
         this.registerButton.id = "registerButton";
-        this.registerButton.classList.add('register');
+        // this.registerButton.classList.add('register');
         this.registerButton.classList.add('start');
 
         this.signInButton.innerText = "Sign In";
         this.signInButton.id = "signInButton";
-        this.signInButton.classList.add('signIn');
+        // this.signInButton.classList.add('signIn');
         this.signInButton.classList.add('start');
 
-        this.classList.add('homeView');
+        // this.classList.add('homeView');
+        this.className = 'componente';
         
     }
 

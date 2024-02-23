@@ -4,7 +4,7 @@ class signInView extends HTMLElement
     {
         super();
         this.formContainer = document.createElement('div');
-        this.signInTitle = document.createElement('p');
+        // this.signInTitle = document.createElement('p');
         this.form = document.createElement('form');      
         this.userNickNameContainer = document.createElement('div');      
         this.userNickNameLabel = document.createElement('label');
@@ -31,12 +31,26 @@ class signInView extends HTMLElement
 
     render()
     {
+        this.className = 'componente';
         this.formContainer.classList.add("form-container");
-        this.signInTitle.classList.add("title");
-        this.signInTitle.textContent = "Sign In Form";
+        // this.signInTitle.classList.add("title");
+        // this.signInTitle.textContent = "Sign In Form";
         this.form.classList.add("form");
+
         this.userNickNameContainer.classList.add("input-group");
+        this.userNickNameLabel.innerHTML = "User Name";
+        this.userNickNameLabel.setAttribute('for', 'userNickName');
+        this.userNickNameInput.setAttribute('type', 'text');
+        this.userNickNameInput.setAttribute('placeholder', 'Nombre de Usuario');
+        this.userNickNameInput.setAttribute('id', 'userNickName');
+
         this.passwordContainer.classList.add("input-group");
+        this.passwordLabel.innerHTML = "Password";
+        this.passwordLabel.setAttribute('for', 'inputPassword');
+        this.inputPassword.setAttribute('type', 'password');
+        this.inputPassword.setAttribute('placeholder', 'Contraseña');
+        this.inputPassword.setAttribute('id', 'inputPassword');
+
         this.forgotPasswordContainer.classList.add("forgot");
         this.forgotPassword.innerHTML = 'Forgot your password?';
         this.forgotPassword.id= "forgotPassword";
@@ -65,7 +79,7 @@ class signInView extends HTMLElement
 
         this.p.appendChild(this.register);
 
-        this.formContainer.appendChild(this.signInTitle);
+        // this.formContainer.appendChild(this.signInTitle);
         this.formContainer.appendChild(this.form);
         this.formContainer.appendChild(this.p);
 

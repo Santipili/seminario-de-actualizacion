@@ -28,11 +28,11 @@ class Application extends HTMLElement {
     }
   
   connectedCallback() {
-    // this.container.className = 'appContainer';
-    // this.container.appendChild(this.home);
-    this.container.appendChild(this.navBar); // testeando navbar + section
-    this.container.className = 'containerActive';
-    this.container.appendChild(this.contacts);
+    this.container.className = 'appContainer';
+    this.container.appendChild(this.home);
+    // this.container.appendChild(this.navBar);
+    // this.container.className = 'containerActive';
+    // this.container.appendChild(this.contacts);
 
     this.appendChild(this.container);
     this.setCallbacks();

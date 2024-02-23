@@ -1,21 +1,24 @@
 /* Estilos para el componente */
 #homeContainer {
     text-align: center;
+    align-items: center;
     padding: 20px;
-    margin: auto 20px;
+    margin: auto auto;
 } 
 
 .principalImage {
-    width: 200px;
+    width: 50%;
     height: auto;
+    margin-bottom: 0px;
 }
 
 .homeSubtitle {
-    font-size: 24px;
+    font-size: 1rem;
     margin-bottom: 20px;
+    padding: 0px;
 }
 
-.register, .signIn {
+#registerButton, #signInButton {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -25,7 +28,7 @@
     border-radius: 5px;
 }
 
-.register:hover, .signIn:hover {
+#registerButton:hover, #signInButton:hover {
     background-color: #0056b3;
 }
 
