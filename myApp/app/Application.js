@@ -1,72 +1,102 @@
-import { signIn } from './signInComponent/signIn.js';
-import { register} from './registerComponent/register.js';
-import { home } from './homeComponent/home.js';
-import { navBar } from './navBarComponent/navBar.js';
-import {loader} from './loaderComponent/loader.js';
+import { signIn } from './components/signIn.js';
+import { register} from './components/register.js';
+import { home } from './components/home.js';
+import { contacts } from './components/contacts.js';
+// import { fileSystem } from './components/fileSystem.js';
+// import { config } from './components/config.js';
+import { navBar } from './components/navBar.js';
+
+
 
 
 class Application extends HTMLElement {
     constructor() {
       super();
-      this.viewReference;
-      this.loader = new loader();
+      this.container = document.createElement('div');
+      this.viewReference = null;
+      this.home = new home();
+      this.signIn = new signIn();
+      this.register = new register();
       this.navBar = new navBar();
+      this.contacts = new contacts();
+      // this.fileSystem = new fileSystem();
+      // this.config = new config();
 
-
+      let style = document.createElement('style');
+      style.innerText = `@import './app/components/styles/appStyle.css'`;
+      this.appendChild(style);
     }
   
   connectedCallback() {
-      
-    this.appendChild(this.loader);
-  
-    setTimeout(() => {
-      this.removeChild(this.loader);
-  
-      this.appendChild(this.navBar);
-  
-      this.viewReference = new signIn();
-      this.appendChild(this.viewReference);
-       
-      this.setCallbacks();
-    }, 1500);
+    // this.container.className = 'appContainer';
+    // this.container.appendChild(this.home);
+    this.container.appendChild(this.navBar); // testeando navbar + section
+    this.container.className = 'containerActive';
+    this.container.appendChild(this.contacts);
+
+    this.appendChild(this.container);
+    this.setCallbacks();
+
+
+
+
   }
   
   setCallbacks() {
-        window.addEventListener('nav-signin-event', () => { this.onSignInView();});
-        window.addEventListener('nav-register-event', () => { this.onRegisterView();});
-        window.addEventListener('nav-home-event', () => { this.onHomeView();});
+        window.addEventListener('signin-button-event', () => { this.onSignInView();});
+        window.addEventListener('register-button-event', () => { this.onRegisterView();});
+        window.addEventListener('usersignedIn-event', () => { this.onUserSignedIn();});
 
-        window.addEventListener('signed', () => { this.onHomeView();});
-        window.addEventListener('register-signin-event', () => { this.onSignInView();});
-        window.addEventListener('signin-register-event', () => { this.onRegisterView();});
-
+        window.addEventListener('adminSignedIn-event', () => { this.onAdminSignedIn();});
+        window.addEventListener('signOut-event', () => { this.onLogOut();});
   }
 
   onSignInView() {
+    this.container.className = 'containerActive';
     if (this.viewReference) {
-      this.removeChild(this.viewReference)
+      this.container.removeChild(this.viewReference)
     }
-    this.viewReference = new signIn();
-    this.appendChild(this.viewReference);
+    this.viewReference = this.signIn;
+    this.container.appendChild(this.viewReference);
   }
 
   onRegisterView()
   {
+    this.container.className = 'containerActive';
     if (this.viewReference) {
-      this.removeChild(this.viewReference)
+      this.container.removeChild(this.viewReference)
     }
-    this.viewReference = new register();
-    this.appendChild(this.viewReference);
+    this.viewReference = this.register;
+    this.container.appendChild(this.viewReference);
   }
 
-  onHomeView() {
-    if (this.viewReference) {
-      this.removeChild(this.viewReference)
-    }
-    this.viewReference = new home();
-    this.appendChild(this.viewReference);
+  onUserSignedIn()
+  {
+    this.container.removeChild(this.viewReference);
+    this.container.removeChild(this.home);
+    this.container.className = 'containerSigned';
+    this.viewReference = this.fileSystem;
+    this.container.appendChild(this.navBar);
+    this.container.appendChild(this.viewReference);
   }
-  
+
+  onAdminSignedIn()
+  {
+    this.container.removeChild(this.viewReference);
+    this.container.removeChild(this.home);
+    this.container.className = 'containerSigned';
+    this.viewReference = this.contacts;
+    this.container.appendChild(this.navBar);
+    this.container.appendChild(this.viewReference);
+  }
+
+  onLogOut()
+  {
+    this.container.className = 'appContainer';
+    this.container.appendChild(this.home);
+    this.appendChild(this.container);
+  }
+
 }
   
 customElements.define('x-application', Application);

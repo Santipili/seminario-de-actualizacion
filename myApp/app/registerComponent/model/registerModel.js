@@ -1,6 +1,0 @@
-
-class registerModel{
-
-}
-
-export {registerModel};

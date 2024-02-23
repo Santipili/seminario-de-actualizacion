@@ -1,0 +1,38 @@
+.nav-list {
+    width: 25%; 
+}
+
+.lista-lateral {
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+.lista-lateral ul {
+    list-style-type: none;
+    padding: 0px;
+}
+
+.lista-lateral ul li {
+  display: flex; 
+  align-items: center; /* Centra verticalmente los elementos */
+  justify-content: flex-start; /* Alinea los elementos a la izquierda horizontalmente */
+  margin-bottom: 10px;
+}
+
+.lista-lateral ul li img {
+  width: 20px; /* ajusta el tamaño de la imagen según sea necesario */
+  height: auto;
+}
+
+.lista-lateral ul li a {
+    margin-left: 5px;
+  }
+
+.lista-lateral div {
+    text-align: center;
+  }
+
+.lista-lateral div img {
+    width: 35px; /* ajusta el tamaño de la imagen según sea necesario */
+    height: auto;
+  }

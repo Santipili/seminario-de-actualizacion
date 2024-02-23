@@ -168,44 +168,37 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `mp_CreateUser`(IN userNickName VARC
 BEGIN
 	DECLARE aux_user_id INT;
 	DECLARE aux_data_id INT;
-	DECLARE aux_result_code INT;
-	DECLARE aux_result_message TEXT;
-	DECLARE aux_result_json VARCHAR(500);
 
-	INSERT INTO `user` (`nick_name`,`password`)
-    VALUES (userNickName, userPassword);
-	SET aux_user_id = LAST_INSERT_ID();
+	START TRANSACTION;
 
-	-- comprobamos si se creo bien el usuario
+	SET aux_user_id = 0;
+	SET aux_data_id = 0;
+
+	INSERT INTO `user` (`nick_name`, `password`) VALUES (userNickName, userPassword);
+	SELECT LAST_INSERT_ID() INTO aux_user_id;
+-- Comprobar si se creó correctamente el usuario
 	IF aux_user_id > 0 THEN
-		INSERT INTO `data`(`name`,`surname`,`NID`,`email`,`phone`)
-		VALUES (userName, userSurname, userNID, userEmail, userPhone);
-		SET aux_data_id = LAST_INSERT_ID();
-	
-		-- comprobamos si se inserta bien la data 
+		INSERT INTO `user_has_group` (`id_user`, `id_group`) 
+			VALUES (aux_user_id, 2);
+		INSERT INTO `data` (`name`, `surname`, `NID`, `email`, `phone`) 
+			VALUES (userName, userSurname, userNID, userEmail, userPhone);
+		SELECT LAST_INSERT_ID() INTO aux_data_id;
+
 		IF aux_data_id > 0 THEN
 			INSERT INTO `user_data` (`id_user`, `id_data`)
-			VALUES (aux_user_id, aux_data_id);
-		
-			INSERT INTO `user_has_group` (`id_user`, `id_group`)
-			VALUES (aux_user_id, 2);
-
-			SET aux_result_code = 1;
-			SET aux_result_message = "usuario creado correctamente";
-		
+				VALUES (aux_user_id, aux_data_id);
+        -- Si todo fue exitoso, hacer commit de la transacción
+			COMMIT;
+			SELECT aux_user_id AS id;
 		ELSE
-			SET aux_result_code = 2;
-			SET aux_result_message = "error al insertar la data del usuario";
+        -- Si hubo un error al insertar en la tabla 'data', deshacer la transacción
+			ROLLBACK;
+			SELECT 0 AS id;
 		END IF;
-
 	ELSE
-		SET aux_result_code = 3;
-		SET aux_result_message = "error al crear usuario (nickName repetido)";
+    -- Si hubo un error al insertar en la tabla 'user', no es necesario hacer un rollback
+		SELECT NULL AS id;
 	END IF;
-	
-  -- devuelve un JSON con status y message, status=1 creado correctamente
-	SET aux_result_json = CONCAT('{ "status": ', aux_result_code, ', "message": ', aux_result_message, ', "id": ', aux_user_id, ' }');
-  SELECT aux_result_json AS result;
 
 END$$
 
@@ -264,15 +257,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `mp_ValidateUser`(IN nickName VARCHA
 BEGIN
 	DECLARE aux_idUser INT;
 	DECLARE aux_validated BOOLEAN;
-	DECLARE aux_result_json VARCHAR(1000);
 
 	SELECT `id`, `password`= userPassword INTO aux_idUser, aux_validated  FROM `user` WHERE nick_name=nickName;
+	
+	IF (aux_validated) THEN 
+		SELECT aux_iduser AS id;
+	ELSE 
+		SELECT NULL AS id;
+	END IF;
 
--- devuelve un JSON con un buleano y el id del usuario si el boolean es true
-	SET aux_result_json = CONCAT('{ "validated": ', aux_validated, ', "iduser": ', IF(aux_validated, aux_iduser, 'null'), ' }');
-  SELECT aux_result_json AS result;
-
-END
+END $$
 
 DELIMITER ;
 

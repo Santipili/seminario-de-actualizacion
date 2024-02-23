@@ -1,0 +1,42 @@
+/* Estilos para el componente */
+#homeContainer {
+    text-align: center;
+    padding: 20px;
+    margin: auto 20px;
+} 
+
+.principalImage {
+    width: 200px;
+    height: auto;
+}
+
+.homeSubtitle {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.register, .signIn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.register:hover, .signIn:hover {
+    background-color: #0056b3;
+}
+
+.formComponent {
+    margin-top: 50px;
+}
+
+.active div button {
+    background-color: green;
+    color: #000;
+
+}
+    
+
