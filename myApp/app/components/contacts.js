@@ -10,7 +10,7 @@ class contacts extends HTMLElement {
         this.model = new contactsModel(this.view);
         this.controller = new contactsController(this.view,this.model);
         let style = document.createElement("style");
-        style.innerText = `@import './app/components/styles/contactsStyle.css'`;
+        style.innerText = `@import './app/styles/contactsStyle.css'`;
         this.appendChild(style);
 
     }

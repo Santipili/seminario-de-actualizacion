@@ -10,7 +10,7 @@ class signIn extends HTMLElement {
         // this.modelReference = new signInModel();
         this.controller = new signInController(this.viewReference,this.modelReference);
         let style = document.createElement("style");
-        style.innerText = `@import './app/components/styles/signInStyle.css'`;
+        style.innerText = `@import './app/styles/signInStyle.css'`;
         this.appendChild(style);
 
     }

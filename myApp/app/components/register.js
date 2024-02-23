@@ -10,7 +10,7 @@ class register extends HTMLElement {
         // this.modelReference = new registerModel();
         this.controller = new registerController(this.viewReference,this.modelReference);
         let style = document.createElement("style");
-        style.innerText = `@import './app/components/styles/registerStyle.css'`;
+        style.innerText = `@import './app/styles/registerStyle.css'`;
         this.appendChild(style);
 
     }

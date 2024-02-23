@@ -10,7 +10,7 @@ class home extends HTMLElement {
         this.model = new homeModel(this.view);
         this.controller = new homeController(this.view,this.model);
         let style = document.createElement("style");
-        style.innerText = `@import './app/components/styles/homeStyle.css'`;
+        style.innerText = `@import './app/styles/homeStyle.css'`;
         this.appendChild(style);
 
     }

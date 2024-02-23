@@ -10,7 +10,7 @@ class navBar extends HTMLElement {
         this.model = new navBarModel(this.view);
         this.controller = new navBarController(this.view,this.model);
         let style = document.createElement("style");
-        style.innerText = `@import './app/components/styles/navBarStyle.css'`;
+        style.innerText = `@import './app/styles/navBarStyle.css'`;
         this.appendChild(style);
 
     }
