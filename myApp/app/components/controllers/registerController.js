@@ -39,7 +39,7 @@ class registerController
                 method: "POST",
                 body:JSON.stringify( dataNewUser),
               };
-            let result = await fetch ("http://localhost:3000/register", requestMetadata);    
+            let result = await fetch ("http://localhost:3000/user/register", requestMetadata);    
             let jsonResult = await result.json();
             console.log(jsonResult);
             alert(jsonResult.message);
@@ -48,7 +48,8 @@ class registerController
                 localStorage.setItem('id', jsonResult.id);
                 localStorage.setItem('token', jsonResult.token);
                 localStorage.setItem('expirationTime', jsonResult.expirationTime)
-                window.dispatchEvent(new CustomEvent('signed'));
+                // window.dispatchEvent(new CustomEvent('signed'));
+                window.dispatchEvent(new CustomEvent('usersignedIn-event'));
             }
           } catch (error) {
             console.log("error");

@@ -5,6 +5,7 @@ import { contacts } from './components/contacts.js';
 // import { fileSystem } from './components/fileSystem.js';
 // import { config } from './components/config.js';
 import { navBar } from './components/navBar.js';
+import { modalGroups } from './components/modalGroups.js';
 
 
 
@@ -19,11 +20,12 @@ class Application extends HTMLElement {
       this.register = new register();
       this.navBar = new navBar();
       this.contacts = new contacts();
+      this.modalGroupsTable = new modalGroups();
       // this.fileSystem = new fileSystem();
       // this.config = new config();
 
       let style = document.createElement('style');
-      style.innerText = `@import './app/components/styles/appStyle.css'`;
+      style.innerText = `@import './app/styles/appStyle.css'`;
       this.appendChild(style);
     }
   
@@ -75,9 +77,11 @@ class Application extends HTMLElement {
     this.container.removeChild(this.viewReference);
     this.container.removeChild(this.home);
     this.container.className = 'containerSigned';
-    this.viewReference = this.fileSystem;
+    // this.viewReference = this.fileSystem;
+    this.viewReference = this.contacts;
     this.container.appendChild(this.navBar);
     this.container.appendChild(this.viewReference);
+    this.appendChild(this.modalGroupsTable);
   }
 
   onAdminSignedIn()
@@ -88,6 +92,7 @@ class Application extends HTMLElement {
     this.viewReference = this.contacts;
     this.container.appendChild(this.navBar);
     this.container.appendChild(this.viewReference);
+    this.appendChild(this.modalGroupsTable);
   }
 
   onLogOut()
@@ -96,6 +101,14 @@ class Application extends HTMLElement {
     this.container.appendChild(this.home);
     this.appendChild(this.container);
   }
+
+  // onModalGroup()
+  // {
+  //   this.appendChild(this.modalGroupsTable);
+
+  // }
+
+  
 
 }
   

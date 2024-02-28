@@ -1,0 +1,27 @@
+.contactsView div {
+    margin-left: 10px;
+}
+
+.buttonContacts {
+    display: block;
+    margin: 5px 10px;
+
+}
+
+.deleteButton, .editButton, .saveButton{
+    margin-left: 10px;
+    width: 15px;
+    height: 15px;
+    transition: transform 0.1s ease;
+}
+
+.deleteButton:hover, .editButton:hover {
+    transform: scale(1.05); 
+}
+
+.editable {
+    border: solid 1px gray;
+    border-radius: 5px;
+    /* padding: 5px;
+    outline: none; */ 
+}

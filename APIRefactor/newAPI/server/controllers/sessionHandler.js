@@ -1,4 +1,4 @@
-const {userHandler} = require("./userHandler");
+const {userController} = require("./userController");
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 
@@ -9,7 +9,7 @@ class userSession{
 
     async signIn(requestData){ 
         try {       
-            let userControl = new userHandler();
+            let userControl = new userController();
             const response = await userControl.validateUser(requestData.nickname, requestData.password);
             if (response.id > 0) {
                 console.log('signed');
@@ -43,7 +43,7 @@ class userSession{
 
     async register(requestData){
         try {      
-            let userControl = new userHandler();
+            let userControl = new userController();
             let response = await userControl.createUser(requestData);
             if (response.id > 0 ){
                 console.log('Create User Success');            

@@ -53,7 +53,7 @@ class signInController{
                 body:JSON.stringify(signInData),
               };
     
-            let result = await fetch ("http://localhost:3000/signIn", requestMetadata);    
+            let result = await fetch ("http://localhost:3000/user/signIn", requestMetadata);    
             let jsonResult = await result.json();
 
             alert(jsonResult.message); //el jsonResult tiene el id, el token y el mensaje
@@ -64,7 +64,9 @@ class signInController{
                 localStorage.setItem('id', jsonResult.id);
                 localStorage.setItem('token', jsonResult.token);
                 localStorage.setItem('expirationTime', jsonResult.expirationTime)
-                window.dispatchEvent(new CustomEvent('signed'));
+                // window.dispatchEvent(new CustomEvent('signed'));
+                window.dispatchEvent(new CustomEvent('usersignedIn-event'));
+
             }
         } catch (error) {
             console.log("error");
