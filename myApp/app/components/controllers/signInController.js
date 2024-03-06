@@ -38,40 +38,10 @@ class signInController{
     async onSignInButtonClick()
     {
         event.preventDefault();
-        console.log('Sign In');
-         
-        // let signInData = {
-        //     'nickname'  : 'saantipili',
-        //     'password'  : 'casa4565'
-        // };
 
         let signInData = this.innerView.signInData()
 
-        try {      
-            let requestMetadata = {
-                method: "POST",
-                body:JSON.stringify(signInData),
-              };
-    
-            let result = await fetch ("http://localhost:3000/user/signIn", requestMetadata);    
-            let jsonResult = await result.json();
-
-            alert(jsonResult.message); //el jsonResult tiene el id, el token y el mensaje
-            console.log(jsonResult);
-
-            if (jsonResult.id>0){
-                localStorage.setItem('nickname', signInData.nickname);
-                localStorage.setItem('id', jsonResult.id);
-                localStorage.setItem('token', jsonResult.token);
-                localStorage.setItem('expirationTime', jsonResult.expirationTime)
-                // window.dispatchEvent(new CustomEvent('signed'));
-                window.dispatchEvent(new CustomEvent('usersignedIn-event'));
-
-            }
-        } catch (error) {
-            console.log("error");
-            alert(error.message);
-        }
+        await this.innerModel.signIn(signInData);
 
     }
 

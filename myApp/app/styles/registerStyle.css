@@ -101,15 +101,17 @@
     font-size: 0.9em;
   }
   
-  .form label .input:focus + span,.form label .input:valid + span {
+  .form label .input:focus + span,.form label .input:not(:placeholder-shown) + span, .form label .input:valid + span {
     top: 30px;
     font-size: 0.7em;
     font-weight: 600;
   }
   
-  .form label .input:valid + span {
+  .form label .input:valid + span,  .form label .input.valid + span {
     color: green;
   }
+
+
   
   .submit {
     border: none;

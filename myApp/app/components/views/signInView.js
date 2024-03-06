@@ -15,8 +15,6 @@ class signInView extends HTMLElement
         this.forgotPasswordContainer = document.createElement('div');
         this.forgotPassword = document.createElement('a');
         this.buttonSignIn = document.createElement('button');
-        this.p = document.createElement('p');        
-        this.register = document.createElement('a'); 
     }
 
     connectedCallback()
@@ -33,8 +31,6 @@ class signInView extends HTMLElement
     {
         this.className = 'componente';
         this.formContainer.classList.add("form-container");
-        // this.signInTitle.classList.add("title");
-        // this.signInTitle.textContent = "Sign In Form";
         this.form.classList.add("form");
 
         this.userNickNameContainer.classList.add("input-group");
@@ -57,10 +53,7 @@ class signInView extends HTMLElement
         this.buttonSignIn.classList.add("sign");
         this.buttonSignIn.innerHTML = "Sign In";
         this.buttonSignIn.id = "signIn";
-        this.p.classList.add('register');
-        this.p.innerHTML = "Don't have an account? ";
-        this.register.innerHTML = "Register";
-        this.register.id= "registerLink";
+
         
         this.userNickNameLabel.for = this.userNickNameInput;
         this.userNickNameContainer.appendChild(this.userNickNameLabel);
@@ -77,11 +70,7 @@ class signInView extends HTMLElement
         this.form.appendChild(this.forgotPasswordContainer);
         this.form.appendChild(this.buttonSignIn);      
 
-        this.p.appendChild(this.register);
-
-        // this.formContainer.appendChild(this.signInTitle);
         this.formContainer.appendChild(this.form);
-        this.formContainer.appendChild(this.p);
 
         this.appendChild(this.formContainer);
     }

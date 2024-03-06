@@ -9,6 +9,18 @@ class registerController
 
     enable()
     {
+        this.innerView.addEventListener('input', (event) => {
+            const target = event.target.id;
+            switch(target)
+            {
+                case "password":
+                    this.passwordValidation(event.target);
+                    break;
+                case "confirmPassword":
+                    this.confirmPasswordValidation(event.target);
+                    break;
+            }            
+        })
         
         this.innerView.addEventListener('click', (event) => {
             const target = event.target.id;
@@ -33,33 +45,61 @@ class registerController
     {
         event.preventDefault();
         let dataNewUser  =this.innerView.getRegisterData();
-        try {
-      
-            let requestMetadata = {
-                method: "POST",
-                body:JSON.stringify( dataNewUser),
-              };
-            let result = await fetch ("http://localhost:3000/user/register", requestMetadata);    
-            let jsonResult = await result.json();
-            console.log(jsonResult);
-            alert(jsonResult.message);
-            if (jsonResult.id>0){
-                localStorage.setItem('nickname', dataNewUser.nickname);
-                localStorage.setItem('id', jsonResult.id);
-                localStorage.setItem('token', jsonResult.token);
-                localStorage.setItem('expirationTime', jsonResult.expirationTime)
-                // window.dispatchEvent(new CustomEvent('signed'));
-                window.dispatchEvent(new CustomEvent('usersignedIn-event'));
-            }
-          } catch (error) {
-            console.log("error");
-            alert(error.message);
-          }
+
+        await this.innerModel.registerUser(dataNewUser);
+        
     }
 
     onSignInLinkClick()
     {
         window.dispatchEvent(new CustomEvent('register-signin-event'));
+
+    }
+
+    
+    passwordValidation(target)
+    {
+        const password = target.value;
+        const validation = this.innerModel.passwordValidation(password); //y si le paso el target al modelo
+
+        if (validation) {
+            target.classList.remove('invalid');
+            target.classList.add('valid');
+            target.setCustomValidity("");
+        } else {
+            target.classList.remove('valid');
+            target.classList.add('invalid');
+            target.setCustomValidity("La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un símbolo, y tener al menos 8 caracteres de longitud.");
+        }
+    }
+
+    confirmPasswordValidation(target)
+    {
+        const password = this.innerView.getPassword();
+        const confirmPassword = target.value;
+    
+        if (password === confirmPassword) {
+          target.setCustomValidity("");
+        } else {
+          target.setCustomValidity("Las contraseñas no coinciden.");
+        }
+
+    }
+
+    emailValidation(target){
+        const email = this.innerView.getEmail();
+        const validation = this.innerModel.emailValidation(email);
+
+        if (validation) {
+            target.classList.remove('invalid');
+            target.classList.add('valid');
+            target.setCustomValidity("");
+        } else {
+            target.classList.remove('valid');
+            target.classList.add('invalid');
+            target.setCustomValidity("El correo electrónico no es válido.");
+        }
+
     }
 }
 

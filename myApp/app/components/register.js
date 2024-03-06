@@ -1,5 +1,5 @@
 import {registerView } from './views/registerView.js';
-// import {registerModel } from './model/registerModel.js';
+import {registerModel } from './models/registerModel.js';
 import {registerController } from './controllers/registerController.js';
 
 
@@ -7,7 +7,7 @@ class register extends HTMLElement {
     constructor() {
       super();
         this.viewReference = new registerView();
-        // this.modelReference = new registerModel();
+        this.modelReference = new registerModel();
         this.controller = new registerController(this.viewReference,this.modelReference);
         let style = document.createElement("style");
         style.innerText = `@import './app/styles/registerStyle.css'`;
@@ -22,7 +22,7 @@ class register extends HTMLElement {
 
     disconnectedCallback() {
       this.controller.disable();
-        this.removeChild(this.viewReference);
+      this.removeChild(this.viewReference);
     }
   
   }

@@ -1,5 +1,5 @@
 import {signInView } from './views/signInView.js';
-// import {signInModel } from './model/signInModel.js';
+import {signInModel } from './models/signInModel.js';
 import {signInController } from './controllers/signInController.js';
 
 
@@ -7,7 +7,7 @@ class signIn extends HTMLElement {
     constructor() {
       super();
         this.viewReference = new signInView();
-        // this.modelReference = new signInModel();
+        this.modelReference = new signInModel();
         this.controller = new signInController(this.viewReference,this.modelReference);
         let style = document.createElement("style");
         style.innerText = `@import './app/styles/signInStyle.css'`;

@@ -5,32 +5,19 @@ class registerView extends HTMLElement
         super();
 
         this.form = document.createElement('form');      
-       
-        this.registerTitle = document.createElement('p');        
+             
         this.nickName = this.createLabel('NickName', 'text', 'nickName');   
-
-        this.flexDiv = document.createElement('div');        
+        this.flexDiv = document.createElement('div');       
 
         this.firstnameLabel = this.createLabel('Firstname', 'text', 'firstname');
-
         this.lastnameLabel = this.createLabel('Lastname', 'text', 'lastname');
-
         this.emailLabel = this.createLabel('Email', 'email', 'email');
-
         this.phoneLabel = this.createLabel('Phone Number', 'number', 'phone');
-
         this.nidLabel = this.createLabel('DNI', 'number', 'dni');
-
-
         this.passwordLabel = this.createLabel('Password', 'password', 'password');
-
         this.confirmPasswordLabel = this.createLabel('Confirm password', 'password', 'confirmPassword');
 
         this.submitButton = document.createElement('button');
-        
-        this.signIn = document.createElement('p'); 
-        this.signInLink = document.createElement('a');
-
     }
 
     connectedCallback()
@@ -48,21 +35,12 @@ class registerView extends HTMLElement
         this.className = 'componente';
         this.form.classList.add('form');
 
-        this.registerTitle.classList.add('registerTitle');
-        this.registerTitle.textContent = 'Register';
-
         this.flexDiv.classList.add('flex');
 
         this.submitButton.classList.add('submit');
-        this.submitButton.textContent = 'Submit';
+        this.submitButton.textContent = 'Enviar';
         this.submitButton.id= "submitButton";
-        
-        this.signInLink.innerHTML = "Sign in";
-        this.signInLink.id = "signInLink";
-        this.signIn.classList.add('signin');
-        this.signIn.innerHTML = 'Already have an account?';
-        
-        this.form.appendChild(this.registerTitle);
+      
         this.form.appendChild(this.nickName);
         this.flexDiv.appendChild(this.firstnameLabel);
         this.flexDiv.appendChild(this.lastnameLabel);
@@ -74,11 +52,7 @@ class registerView extends HTMLElement
         this.form.appendChild(this.confirmPasswordLabel);
         this.form.appendChild(this.submitButton);
 
-        this.signIn.appendChild(this.signInLink);
-        this.form.appendChild(this.signIn);
-
         this.appendChild(this.form);
-
     }
 
     createLabel(labelText, inputType, inputId) {
@@ -110,6 +84,14 @@ class registerView extends HTMLElement
       }
       return userDataRegister;
 
+    }
+
+    getPassword(){
+        return this.passwordLabel.childNodes[0].value;
+    }
+
+    getEmail(){
+        return this.emailLabel.childNodes[0].value;
     }
 }
 
